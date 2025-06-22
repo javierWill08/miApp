@@ -1,9 +1,9 @@
 name: Despliegue app in argon
 on:
   push:
-    branches: [ "trunk" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "trunk" ]
+    branches: [ "main" ]
 
 jobs:
   build:
