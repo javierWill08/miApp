@@ -9,6 +9,9 @@ jobs:
   build:
     name: Build imagen docker
     runs-on: ubuntu-latest
+    
+    outputs: 
+      image_tag_sha: ${{ github.sha }}
 
     steps:
       - uses: actions/checkout@v4
@@ -16,7 +19,7 @@ jobs:
         run: echo Codigo correcto
       
       - name: Configurar AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
               aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
               aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -34,3 +37,39 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+    
+  deploy: 
+    name: Deploy aplication in cluster eks
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      EKS_CLUSTER_NAME: LTS-eks-fPHBDzLH 
+      KUBERNETES_NAMESPACE: helmchartaws 
+      HELM_RELEASE_NAME: mi-app-nginx-release 
+
+    steps:
+      - name: Configurar AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4.1.0 
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Install kubectl
+        uses: aws-actions/setup-kubectl@v3
+      
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name LTS-eks-fPHBDzLH --region us-east-1
+      
+      - name: Install Helm
+        uses: azure/setup-helm@v4 
+
+      - name: Deploy usando helm
+        run: |
+          helm upgrade --install ${{ env.HELM_RELEASE_NAME }} ./chart \
+            --namespace ${{ env.KUBERNETES_NAMESPACE }} \
+            --set image.tag=${{ needs.build.outputs.image_tag_sha }} \ # <--- Pasa el SHA de la imagen
+            --set image.repository=752030778431.dkr.ecr.us-east-1.amazonaws.com/miapp-nginx
+            
+        working-directory: ./microApp # <--- IMPORTANTE: Asegura que el Helm Chart sea accesible desde esta ruta
