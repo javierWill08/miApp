@@ -65,9 +65,5 @@ jobs:
         uses: azure/setup-helm@v4 
 
       - name: Deploy usando helm
-        run: |
-          helm upgrade --install ${{ env.HELM_RELEASE_NAME }} ./chart \
-            --namespace ${{ env.KUBERNETES_NAMESPACE }} \
-            --set image.tag=${{ needs.build.outputs.image_tag_sha }} \ 
-            --set image.repository=752030778431.dkr.ecr.us-east-1.amazonaws.com/miapp-nginx
-        #working-directory: . 
+        run: helm upgrade --install ${{ env.HELM_RELEASE_NAME }} ./chart --namespace ${{ env.KUBERNETES_NAMESPACE }} --set image.tag=${{ needs.build.outputs.image_tag_sha }} --set image.repository=752030778431.dkr.ecr.us-east-1.amazonaws.com/miapp-nginx
+        working-directory: .
