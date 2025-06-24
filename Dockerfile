@@ -5,7 +5,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copia tu página al directorio público de NGINX
-COPY . /usr/share/nginx/html
+COPY app  /usr/share/nginx/html
 
 # Expone el puerto 80
 EXPOSE 80
