@@ -59,7 +59,7 @@ jobs:
       
       - name: Update kubeconfig
         run: |
-          aws eks update-kubeconfig --name LTS-eks-fPHBDzLH --region us-east-1
+          aws eks update-kubeconfig --name education-eks-Cv7alooy --region us-east-1
       
       - name: Install Helm
         uses: azure/setup-helm@v4 
