@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      EKS_CLUSTER_NAME: LTS-eks-fPHBDzLH 
+      EKS_CLUSTER_NAME: education-eks-Cv7alooy 
       KUBERNETES_NAMESPACE: helmchartaws 
       HELM_RELEASE_NAME: mi-app-nginx-release 
 
