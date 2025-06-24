@@ -71,4 +71,4 @@ jobs:
             --set image.tag=${{ needs.build.outputs.image_tag_sha }} \ # <--- Pasa el SHA de la imagen
             --set image.repository=752030778431.dkr.ecr.us-east-1.amazonaws.com/miapp-nginx
             
-        working-directory: ./microApp # <--- IMPORTANTE: Asegura que el Helm Chart sea accesible desde esta ruta
+        working-directory: . 
