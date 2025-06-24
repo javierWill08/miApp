@@ -48,6 +48,11 @@ jobs:
       HELM_RELEASE_NAME: mi-app-nginx-release 
 
     steps:
+        
+      - name: Run a one-line script
+        uses: actions/checkout@v4
+        
+
       - name: Configurar AWS CLI
         uses: aws-actions/configure-aws-credentials@v4.1.0 
         with:
